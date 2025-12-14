@@ -45,14 +45,25 @@ Inspired by the official Django tutorial but extended with authentication and on
 
 ## Database Schema
 
-The app uses four core models:
+Database Schema (ER Diagram Summary)The application uses four main models:Questionid (Primary Key)
+question_text (CharField)
+pub_date (DateTimeField)
+is_active (BooleanField)
 
-1. **Question** – Poll question, publication date, active status.
-2. **Choice** – Options with cached vote count.
-3. **User** – Django's built-in User model.
-4. **Vote** – Tracks individual votes with timestamp and unique constraint `(user_id, question_id)`.
+Choiceid (Primary Key)
+choice_text (CharField)
+votes (IntegerField – cached vote count)
+question_id (ForeignKey → Question)
 
-(See your ER diagram for relationships.)
+UserBuilt-in Django User model extended or used as-is (fields: id, username, email, etc.)
+
+Vote (tracks individual votes)id (Primary Key)
+timestamp (DateTimeField)
+user_id (ForeignKey → User)
+question_id (ForeignKey → Question)
+choice_id (ForeignKey → Choice)
+
+
 
 ## Project Structure
 
@@ -115,6 +126,11 @@ View results instantly.
 API (Planned)Planning to add REST API endpoints using Django REST Framework for:Listing polls
 Voting via POST
 Results retrieval
+API Endpoints
+GET /api/polls/ – List all polls
+GET /api/polls/<id>/ – Poll detail
+POST /api/polls/<id>/vote/ – Submit a vote (authenticated)
+
 
 Development TimelineWeek 1: Planning & ideas
 Week 2: ER Diagram
