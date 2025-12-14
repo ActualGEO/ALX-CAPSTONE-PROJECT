@@ -1,115 +1,134 @@
 ALX-CAPSTONE-PROJECT
 
-Django Polls AppA simple yet fully functional web-based polling application built with Django. Users can create polls, vote on active polls (once per poll), and view real-time results. The app includes user authentication and prevents duplicate voting through a dedicated cote model. login, and logout functionality.
-Only authenticated users can create polls and vote.
+Django Polls App 🗳️
 
-Features 
-1.Poll ManagementAuthenticated users can create new polls with a question and multiple choices.
-2.Polls can be marked as active or inactive.
-3.VotingAuthenticated users can vote on active polls.
-4.Each user can vote only once per poll (enforced via unique constraint on user_id + question_id).
-5.ResultsReal-time vote counts displayed after voting or on a dedicated results page.
+[![Django](https://img.shields.io/badge/Django-5.0-green.svg)](https://www.djangoproject.com/)
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+A simple, fully functional polling web application built with Django. Users can create polls, vote once per poll, and view real-time results. Includes user authentication and proper vote tracking to prevent duplicates.
 
-API REST API endpoints for polls, choices, and votes using Django REST Framewor
+Inspired by the official Django tutorial but extended with authentication and one-vote-per-user enforcement.
 
-Database Schema (ER Diagram Summary)The application uses four main models:Questionid (Primary Key)
-question_text (CharField)
-pub_date (DateTimeField)
-is_active (BooleanField)
+## Table of Contents
 
-Choiceid (Primary Key)
-choice_text (CharField)
-votes (IntegerField – cached vote count)
-question_id (ForeignKey → Question)
+- [Features](#features)
+- [Database Schema](#database-schema)
+- [Project Structure](#project-structure)
+- [Requirements](#requirements)
+- [Installation & Setup](#installation--setup)
+- [Usage](#usage)
+- [API (Planned)](#api-planned)
+- [Development Timeline](#development-timeline)
+- [Contributing](#contributing)
+- [License](#license)
 
-UserBuilt-in Django User model extended or used as-is (fields: id, username, email, etc.)
+## Features
 
-Vote (tracks individual votes)id (Primary Key)
-timestamp (DateTimeField)
-user_id (ForeignKey → User)
-question_id (ForeignKey → Question)
-choice_id (ForeignKey → Choice)
-Unique constraint: (user_id, question_id) – ensures one vote per user per poll
+- **User Authentication**
+  - Register, login, and logout.
+  - Only authenticated users can create polls and vote.
 
-Project Structure
+- **Poll Management**
+  - Create polls with a question and multiple choices.
+  - Polls can be active or inactive.
 
-polls/
-├── __init__.py
-├── admin.py
-├── apps.py
-├── migrations/
-├── models.py
-├── tests.py
-├── urls.py
-├── views.py
-├── templates/polls/
-│   ├── index.html           
-│   ├── detail.html          
-│   ├── results.html        # Results page
+- **Voting**
+  - One vote per user per poll (enforced by unique constraint).
+  - Real-time vote updates.
+
+- **Results**
+  - View vote counts and percentages after voting.
+
+- **Admin Panel**
+  - Full CRUD for polls via Django admin.
+
+## Database Schema
+
+The app uses four core models:
+
+1. **Question** – Poll question, publication date, active status.
+2. **Choice** – Options with cached vote count.
+3. **User** – Django's built-in User model.
+4. **Vote** – Tracks individual votes with timestamp and unique constraint `(user_id, question_id)`.
+
+(See your ER diagram for relationships.)
+
+## Project Structure
+
+polls_app/
+├── polls/
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── templates/polls/
 │   └── ...
-accounts/                       # Authentication views/templates
-mysite/
-├── settings.py
-├── urls.py
-├── wsgi.py
-└── ...
-manage.py
+├── accounts/                   # Authentication app
+├── mysite/
+│   ├── settings.py
+│   ├── urls.py
+│   └── ...
+├── manage.py
+└── requirements.txt
 
-Requirements
-Python 3.8+
-Django 4.x or 5.x
-(Optional) Django REST Framework for API endpoints
+## Requirements
 
+- Python 3.10+
+- Django 5.0+
 
+```txt
+Django>=5.0
+# djangorestframework  # Uncomment when adding API
 
-Django>=4.2
-djangorestframework  # if API is implemented
-
-Installation & SetupClone the repository:bash
+Installation & SetupClone the repo:bash
 
 git clone https://github.com/yourusername/django-polls-app.git
 cd django-polls-app
 
-Create a virtual environment:bash
+Set up virtual environment:bash
 
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
 Install dependencies:bash
 
 pip install -r requirements.txt
 
-Apply migrations:bash
+Run migrations:bash
 
 python manage.py makemigrations
 python manage.py migrate
 
-Create a superuser (for admin access):bash
+Create superuser:bash
 
 python manage.py createsuperuser
 
-Run the development server:bash
+Start server:bash
 
 python manage.py runserver
 
-Visit http://127.0.0.1:8000/polls/ to see the list of polls.
+Visit http://127.0.0.1:8000/polls/ to see your polls!UsageSign up / log in.
+Create polls via admin or future create view.
+Vote on active polls.
+View results instantly.
 
-UsageRegister or log in at /accounts/signup/ or /accounts/login/.
-Create a new poll via the admin panel (/admin/) or a dedicated create poll view.
-Browse active polls on the home page and cast your vote.
-View results immediately after voting or via the results link.
+API (Planned)Planning to add REST API endpoints using Django REST Framework for:Listing polls
+Voting via POST
+Results retrieval
 
-API Endpoints (if implemented)GET /api/polls/ – List all polls
-GET /api/polls/<id>/ – Poll detail
-POST /api/polls/<id>/vote/ – Submit a vote (authenticated)
+Development TimelineWeek 1: Planning & ideas
+Week 2: ER Diagram
+Week 3: Authentication
+Week 4: Models, views, templates
+Week 5: Testing & debugging
 
-Development Plan (Original Timeline)
-Week 1: Planning and idea mapping
-Week 2: ER Diagram design
-Week 3: Authentication system
-Week 4: Models, views, templates, and URL mapping
-Week 5: Testing and deployment 
+ContributingContributions welcome! Fork, create a branch, and submit a pull request.LicenseMIT License (LICENSE) – free to use and modify.
 
+This will render beautifully on GitHub—the TOC links will jump straight to sections when clicked. GitHub also adds an automatic sidebar TOC for extra navigation.
 
+If you add screenshots later, place them in the Features or Usage section for even more impact.
+
+Let me know if you want to add anything else (like a demo GIF placeholder or more badges)! 🚀
+
+34 web pages
 
