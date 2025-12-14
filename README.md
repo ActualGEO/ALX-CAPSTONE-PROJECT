@@ -6,19 +6,20 @@ Django Polls App 🗳️
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A simple, fully functional polling web application built with Django. Users can create polls, vote once per poll, and view real-time results. Includes user authentication and proper vote tracking to prevent duplicates.
+A simple, fully functional polling web application built with Django. Users can create polls, vote once per poll, and view real-time results. Includes user authentication, proper vote tracking, and a **REST API** built with Django REST Framework.
 
-Inspired by the official Django tutorial but extended with authentication and one-vote-per-user enforcement.
+Inspired by the official Django tutorial but extended with authentication, one-vote-per-user enforcement, and API endpoints.
 
 ## Table of Contents
 
 - [Features](#features)
+- [Models](#models)
 - [Database Schema](#database-schema)
+- [API Endpoints](#api-endpoints)
 - [Project Structure](#project-structure)
 - [Requirements](#requirements)
 - [Installation & Setup](#installation--setup)
 - [Usage](#usage)
-- [API (Planned)](#api-planned)
 - [Development Timeline](#development-timeline)
 - [Contributing](#contributing)
 - [License](#license)
@@ -40,37 +41,116 @@ Inspired by the official Django tutorial but extended with authentication and on
 - **Results**
   - View vote counts and percentages after voting.
 
+- **REST API**
+  - Full CRUD for polls and secure voting via API.
+  - Token or session authentication.
+
 - **Admin Panel**
   - Full CRUD for polls via Django admin.
 
-## Database Schema
+## Models
 
-Database Schema (ER Diagram Summary)The application uses four main models:Questionid (Primary Key)
-question_text (CharField)
-pub_date (DateTimeField)
-is_active (BooleanField)
+Here are the core Django models:
 
-Choiceid (Primary Key)
-choice_text (CharField)
-votes (IntegerField – cached vote count)
-question_id (ForeignKey → Question)
+```python
+# polls/models.py
 
-UserBuilt-in Django User model extended or used as-is (fields: id, username, email, etc.)
+from django.db import models
+from django.contrib.auth.models import User
 
-Vote (tracks individual votes)id (Primary Key)
-timestamp (DateTimeField)
-user_id (ForeignKey → User)
-question_id (ForeignKey → Question)
-choice_id (ForeignKey → Choice)
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField('date published')
+    is_active = models.BooleanField(default=True)
 
+    def __str__(self):
+        return self.question_text
 
+class Choice(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)  # Cached vote count
 
-## Project Structure
+    def __str__(self):
+        return self.choice_text
+
+class Vote(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'question')
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'question'], name='unique_vote_per_user_per_question')
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} voted '{self.choice}' on '{self.question}'"
+
+Database SchemaFour core entities:Question – Poll question, publication date, active status.
+Choice – Options with cached vote count (FK to Question).
+User – Django's built-in User model.
+Vote – Individual votes with unique constraint (user_id, question_id).
+
+API EndpointsThe app includes a REST API powered by Django REST Framework.AuthenticationUses TokenAuthentication (or SessionAuthentication for browsable API).
+Register and obtain token via /api/auth/ (or use DRF's built-in token view).
+
+EndpointsMethod
+Endpoint
+Description
+Authentication Required
+GET
+/api/polls/
+List all active polls
+No
+GET
+/api/polls/<id>/
+Retrieve a specific poll with choices
+No
+GET
+/api/polls/<id>/results/
+Get vote results for a poll
+No
+POST
+/api/polls/
+Create a new poll (admin/user)
+Yes
+POST
+/api/polls/<id>/vote/
+Submit a vote (choice_id required)
+Yes
+GET
+/api/users/me/votes/
+List polls the current user has voted on
+Yes
+
+Example Vote Request (POST):json
+
+{
+  "choice_id": 3
+}
+
+Response on success:json
+
+{
+  "detail": "Vote recorded successfully.",
+  "results": {
+    "choice_text": "Option A",
+    "votes": 12,
+    "percentage": 60.0
+  },
+  "total_votes": 20
+}
+
+The browsable API is available at the same endpoints when running the development server.Project Structure
 
 polls_app/
 ├── polls/
 │   ├── models.py
-│   ├── views.py
+│   ├── serializers.py      # DRF serializers
+│   ├── views.py            # Includes API views
 │   ├── urls.py
 │   ├── templates/polls/
 │   └── ...
@@ -82,14 +162,14 @@ polls_app/
 ├── manage.py
 └── requirements.txt
 
-## Requirements
+RequirementsPython 3.10+
+Django 5.0+
+Django REST Framework
 
-- Python 3.10+
-- Django 5.0+
+txt
 
-```txt
 Django>=5.0
-# djangorestframework  # Uncomment when adding API
+djangorestframework>=3.14
 
 Installation & SetupClone the repo:bash
 
@@ -118,33 +198,18 @@ Start server:bash
 
 python manage.py runserver
 
-Visit http://127.0.0.1:8000/polls/ to see your polls!UsageSign up / log in.
-Create polls via admin or future create view.
-Vote on active polls.
+Web app: http://127.0.0.1:8000/polls/
+API root: http://127.0.0.1:8000/api/
+
+UsageSign up / log in via web or API.
+Create polls via admin or API.
+Vote through the web interface or API.
 View results instantly.
-
-API (Planned)Planning to add REST API endpoints using Django REST Framework for:Listing polls
-Voting via POST
-Results retrieval
-API Endpoints
-GET /api/polls/ – List all polls
-GET /api/polls/<id>/ – Poll detail
-POST /api/polls/<id>/vote/ – Submit a vote (authenticated)
-
 
 Development TimelineWeek 1: Planning & ideas
 Week 2: ER Diagram
 Week 3: Authentication
 Week 4: Models, views, templates
 Week 5: Testing & debugging
-
-ContributingContributions welcome! Fork, create a branch, and submit a pull request.LicenseMIT License (LICENSE) – free to use and modify.
-
-This will render beautifully on GitHub—the TOC links will jump straight to sections when clicked. GitHub also adds an automatic sidebar TOC for extra navigation.
-
-If you add screenshots later, place them in the Features or Usage section for even more impact.
-
-Let me know if you want to add anything else (like a demo GIF placeholder or more badges)! 🚀
-
-34 web pages
+Extra: API implementation with DRF
 
