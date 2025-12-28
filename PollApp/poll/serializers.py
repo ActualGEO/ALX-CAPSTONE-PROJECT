@@ -21,7 +21,7 @@ class ChoiceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class VoteSerializers(serializers.ModelSerializer):
+class VoteSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     question = QuestionSerializer(read_only=True)
     choice = ChoiceSerializer(read_only=True)
