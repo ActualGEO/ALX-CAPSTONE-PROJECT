@@ -4,14 +4,21 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
+        fields = [
+            'username'
+        ]
 
 
 class QuestionSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = serializers.CharField(source='user.username', read_only=True)
     class Meta:
         model = Question
-        fields = '__all__'
+        fields = [
+            'user',
+            'poll_question',
+            'publication_date',
+            'is_active',
+        ]
 
 
 class ChoiceSerializer(serializers.ModelSerializer):
