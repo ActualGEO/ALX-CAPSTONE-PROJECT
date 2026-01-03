@@ -60,7 +60,7 @@ from django.contrib.auth.models import User
 
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
+    publication_date = models.DateTimeField('date published')
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -162,19 +162,22 @@ polls_app/
 ├── manage.py
 └── requirements.txt
 
-RequirementsPython 3.10+
-Django 5.0+
+Requirements
+Python 3.14
+Django 6.0
 Django REST Framework
 
-txt
 
-Django>=5.0
+
+
 djangorestframework>=3.14
 
-Installation & SetupClone the repo:bash
+Installation & Adding the repo:bash
 
-git clone https://github.com/yourusername/django-polls-app.git
-cd django-polls-app
+git remote add origin https://github.com/ActualGEO/ALX-CAPSTONE-PROJECT.git
+git branch -M main
+git push -u origin main
+
 
 Set up virtual environment:bash
 

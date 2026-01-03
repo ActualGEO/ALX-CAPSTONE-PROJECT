@@ -20,7 +20,7 @@ def login_user(request):
         user = serializer.validated_data['user']
 
         token, created = Token.objects.get_or_create(user=user)
-        user_data = Userserializer(user).data
+        user_data = UserSerializer(user).data
 
         return Response({
             'token': token.key,
@@ -28,3 +28,6 @@ def login_user(request):
         },   status=status.HTTP_200_OK)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+

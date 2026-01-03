@@ -12,13 +12,17 @@ class QuestionViewSet(ModelViewSet):
     serializer_class = QuestionSerializer
     Authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-
+    
     
 
 class ChoiceViewSet(ModelViewSet):
     queryset = Choice.objects.all()
     serializer_class = ChoiceSerializer
-    #
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+
 class VoteViewSet(ModelViewSet):
     queryset = Vote.objects.all()
     serializer_class = VoteSerializer
