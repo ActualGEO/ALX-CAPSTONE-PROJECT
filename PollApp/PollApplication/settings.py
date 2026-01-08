@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-iq(wv^vnqr%2oc1*()=x7j*eo5-ky(wh4e&81aw5cd&4xi7s(q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['alx-capstone-project-1.onrender.com']
 
 
 # Application definition
